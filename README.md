@@ -2,7 +2,7 @@
 A repository for _Data Structures and Algorithms Laboratory_ (fourth semester)
 
 ## Assignments:
-[Group A - No. 1 (Inc)] (Group A No. 1)
+[Group A - No. 1 (Inc)](#Group-A---No.-1)
 
 
 ### Group A - No. 1
