@@ -23,7 +23,7 @@ b. Remove (element) - Remove the value
 
 c. Contains (element) - Return true if element is in collection
 
-d. Size () - Return number of values in collection Iterator () Return an iterator used to loop
+d. Size () - Return number of values in collection, Iterator () - Return an iterator used to loop
 over collection
 
 e. Intersection of two sets
