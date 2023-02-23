@@ -195,7 +195,7 @@ int main()
   hash book1, book2;
 
   do{
-    std::cout << "1) Insert \n2) Search \n3)Display \n4)Exit";
+    std::cout << "1) Insert \n2) Search \n3)Display \n4)Exit" << std::endl;
     std::cin >> ch;
 
     switch(ch){
@@ -218,8 +218,10 @@ int main()
       break;
 
     case 3:
+      std::cout << "Book 1 (Linear Probing): " << std::endl;
       book1.display();
       std::cout << std::endl;
+      std::cout << "Book 2 (Quadratic Probing): " << std::endl;
       book2.display();
       break;
 
