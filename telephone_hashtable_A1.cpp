@@ -27,6 +27,7 @@ class hash
     for(int i = 0; i < size; i++)
     {
       flag[i] = 0;
+      hashtable[i].telephoneNo = -1;
     }
   }
   hash(int a)
@@ -38,24 +39,23 @@ class hash
     for(int i = 0; i < size; i++)
     {
       flag[i] = 0;
+      hashtable[i].telephoneNo = -1;
     }
   }
-  void insertLinearProbing();
-  void insertQuadraticProbing();
+  void insertLinearProbing(std::string name, long telephoneNo);
+  void insertQuadraticProbing(std::string name, long telephoneNo);
   int searchLinearProbing(std::string name);
   int searchQuadraticProbing(std::string name);
   void display();
 };
 
-void hash::insertLinearProbing()
+void hash::insertLinearProbing(std::string name, long telephoneNo)
 {
   telephoneRecord *t = new telephoneRecord;
-  std::cout << "Enter name" << std::endl;
-  std::cin >> t->name;
-  std::cout << "Enter telephone number" << std::endl;
-  std::cin >> t->telephoneNo;
+  t->name = name;
+  t->telephoneNo = telephoneNo;
 
-  int loc, ASCII_sum;
+  int loc, ASCII_sum = 0;
   for(int i = 0; i < t->name.size(); i++)
   {
     ASCII_sum = ASCII_sum + int(t->name[i]);
@@ -76,15 +76,13 @@ void hash::insertLinearProbing()
   }
 }
 
-void hash::insertQuadraticProbing()
+void hash::insertQuadraticProbing(std::string name, long telephoneNo)
 {
   telephoneRecord *t = new telephoneRecord;
-  std::cout << "Enter name" << std::endl;
-  std::cin >> t->name;
-  std::cout << "Enter telephone number" << std::endl;
-  std::cin >> t->telephoneNo;
+  t->name = name;
+  t->telephoneNo = telephoneNo;
 
-  int loc, ASCII_sum;
+  int loc, ASCII_sum = 0;
   for(int i = 0; i < t->name.size(); i++)
   {
     ASCII_sum = ASCII_sum + int(t->name[i]);
@@ -107,7 +105,7 @@ void hash::insertQuadraticProbing()
 
 int hash::searchLinearProbing(std::string name)
 {
-  int loc, ASCII_sum, count = 0;
+  int loc, ASCII_sum = 0, count = 0;
   for(int i =0; i < name.size(); i++)
   {
     ASCII_sum = ASCII_sum + int(name[i]);
@@ -144,7 +142,7 @@ int hash::searchLinearProbing(std::string name)
 
 int hash::searchQuadraticProbing(std::string name)
 {
-  int loc, ASCII_sum, count = 0;
+  int loc, ASCII_sum = 0, count = 0;
   for(int i =0; i < name.size(); i++)
   {
     ASCII_sum = ASCII_sum + int(name[i]);
@@ -190,7 +188,47 @@ void hash::display()
 }
 
 int main()
-{
+{ 
+  int ch, n1, n2;
+  std::string name;
+  long telephoneNo;
   hash book1, book2;
+
+  do{
+    std::cout << "1) Insert \n2) Search \n3)Display \n4)Exit";
+    std::cin >> ch;
+
+    switch(ch){
+    case 1:
+      std::cout << "Enter name" << std::endl;
+      std::getline(std::cin >> std::ws, name);
+      std::cout << "Enter telephone number" << std::endl;
+      std::cin >> telephoneNo;
+      book1.insertLinearProbing(name, telephoneNo);
+      book2.insertQuadraticProbing(name, telephoneNo);
+      break;
+
+    case 2:
+      std::cout << "Enter name to be searched: ";
+      std::getline(std::cin >> std::ws, name);
+      n1 = book1.searchLinearProbing(name);
+      n2 = book2.searchQuadraticProbing(name);
+      std::cout << "No. of comparisons by linear probing: " << n1 << std::endl;
+      std::cout << "No. of comparisons by quadratic probing: " << n2 << std::endl;
+      break;
+
+    case 3:
+      book1.display();
+      std::cout << std::endl;
+      book2.display();
+      break;
+
+    default:
+      std::cout << "Please enter valid choice" << std::endl;
+      break;
+    }
+
+}while(ch!=4);
   return 0;
+
 }
