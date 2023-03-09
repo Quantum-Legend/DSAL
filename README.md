@@ -4,6 +4,7 @@ A repository for _Data Structures and Algorithms Laboratory_ (fourth semester)
 ## Assignments:
 * [Group A - No. 1](#Group-A---No.-1)
 * [Group A - No. 4](#Group-A---No.-4)
+* [Group B - No. 5](#Group-B---No.-5)
 
 
 ### Group A - No. 1
@@ -33,3 +34,9 @@ f. Union of two sets
 g. Difference between two sets
 
 h. Subset
+
+### Group B - No. 5
+
+A book consists of chapters, chapters consist of sections and sections consist of
+subsections. Construct a tree and print the nodes. Find the time and space requirements
+of your method.
