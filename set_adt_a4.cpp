@@ -17,15 +17,15 @@ public:
         capacity = n;
         arr = new int[capacity];
         top = -1;
-        std::cout << "Set of capacity " << n << " created" << std::endl;
+        std::cout << "Set of capacity " << n+1 << " created" << std::endl;
     }
     void add(int newElement);
     void remove(int element);
     bool contains(int element);
     int size();
-    Set intersection(Set B);
-    Set uni(Set B);
-    Set diff(Set B);
+    Set* intersection(Set B);
+    Set* uni(Set B);
+    Set* diff(Set B);
     bool subset(Set B);
     void menu();
     void show();
@@ -50,13 +50,13 @@ void Set::add(int newElement)
 }
 void Set::remove(int element)
 {
-    if (top <= 0)
+    if (top < 0)
     {
         std::cout << "Underflow" << std::endl;
     }
     else
     {
-        for (int i = 0; i < top; i++)
+        for (int i = 0; i < top + 1; i++)
         {
             if (arr[i] == element)
             {
@@ -75,7 +75,7 @@ bool Set::contains(int element)
     {
         return false;
     }
-    for (int i = 0; i < top; i++)
+    for (int i = 0; i < top + 1; i++)
     {
         if (arr[i] == element)
         {
@@ -88,50 +88,50 @@ int Set::size()
 {
     return top + 1;
 }
-Set Set::intersection(Set B)
+Set* Set::intersection(Set B)
 {
-    Set C;
-    for (int i = 0; i < this->top; i++)
+    Set *C = new Set(this->capacity + B.capacity);
+    for (int i = 0; i < this->top + 1; i++)
     {
-        for (int j = 0; j < B.top; j++)
+        for (int j = 0; j < B.top + 1; j++)
         {
             if (this->arr[i] == B.arr[j])
             {
-                C.add(this->arr[i]);
+                C->add(B.arr[j]);
             }
         }
     }
     return C;
 }
-Set Set::uni(Set B)
+Set* Set::uni(Set B)
 {
-    Set C;
-    for(int i = 0; i < this->top; i++)
+    Set *C = new Set(this->capacity + B.capacity);
+    for(int i = 0; i < this->top + 1; i++)
     {
-        C.add(this->arr[i]);
+        C->add(this->arr[i]);
     }
-    for (int i = 0; i < B.top; i++)
+    for (int i = 0; i < B.top + 1; i++)
     {
         for (int j = 0; j < this->top; j++)
         {
             if (B.arr[i] != this->arr[j])
             {
-                C.add(B.arr[i]);
+                C->add(B.arr[i]);
             }
         }
     }
     return C;
 }
-Set Set::diff(Set B)
+Set* Set::diff(Set B)
 {
-    Set C;
-    for (int i = 0; i < this->top; i++)
+    Set *C = new Set(this->capacity + B.capacity);
+    for (int i = 0; i < this->top + 1; i++)
     {
-        for (int j = 0; j < B.top; j++)
+        for (int j = 0; j < B.top + 1; j++)
         {
             if (this->arr[i] != B.arr[j])
             {
-                C.add(this->arr[i]);
+                C->add(this->arr[i]);
             }
         }
     }
@@ -139,9 +139,9 @@ Set Set::diff(Set B)
 }
 bool Set::subset(Set B)
 {
-    for(int i = 0; i < B.top; i++)
+    for(int i = 0; i < B.top + 1; i++)
     {
-        for(int j = 0; j < this->top; j++)
+        for(int j = 0; j < this->top + 1; j++)
         {
             if(!(B.contains(this->arr[j])))
                 return false;
@@ -209,7 +209,7 @@ int main()
     int sizeA, sizeB, ch;
     std::cout << "Enter max capacity of set A and B: " << std::endl;
     std::cin >> sizeA >> sizeB;
-    Set A(sizeA), B(sizeB), C(sizeA + sizeB);
+    Set A(sizeA-1), B(sizeB-1), *C;
     do
     {
         std::cout << "\nWhat do you want to do?" << std::endl;
@@ -225,19 +225,19 @@ int main()
                 break;
             case 3:
                 C = A.uni(B);
-                C.show();
+                C->show();
                 break;
             case 4:
                 C = A.intersection(B);
-                C.show();
+                C->show();
                 break;
             case 5:
                 C = A.diff(B);
-                C.show();
+                C->show();
                 break;
             case 6:
                 C = B.diff(A);
-                C.show();
+                C->show();
                 break;
             case 7:
                 if(A.subset(B))
