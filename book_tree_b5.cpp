@@ -16,7 +16,7 @@ class stack
     node *arr[MAX];
     int flag[MAX], top;
 
-  public:
+public:
     stack()
     {
         top = -1;
@@ -65,11 +65,57 @@ node *stack::pop()
     return temp;
 }
 
+class Queue
+{
+private:
+    node *arr[MAX];
+    int front, rear;
+
+public:
+    Queue()
+    {
+        front = rear = -1;
+    }
+    bool empty();
+    void insert(node *P);
+    node *remove();
+};
+
+bool Queue::empty()
+{
+    if (front == -1 && rear == -1)
+        return true;
+    return false;
+}
+
+void Queue::insert(node *P)
+{
+    if (this->empty())
+    {
+        rear = front = 0;
+    }
+    else
+    {
+        rear++;
+    }
+    arr[rear] = P;
+}
+
+node *Queue::remove()
+{
+    node *t = arr[front];
+    if (rear == front)
+        rear = front = -1;
+    else
+        front++;
+    return t;
+}
+
 class tree
 {
     node *root;
 
-  public:
+public:
     tree()
     {
         root = NULL;
@@ -84,6 +130,7 @@ class tree
     void nonRecInorder(node *t);
     void nonRecPreorder(node *t);
     void nonRecPostorder(node *t);
+    void BFS(node *t);
     void menu();
 };
 
@@ -111,7 +158,7 @@ node *tree::create()
 /* void tree::display()
 {
     temp = root;
-    std::cout << temp-> 
+    std::cout << temp->
 } */
 
 void tree::printBT(const std::string &prefix, const node *BSTnode, bool isLeft)
@@ -213,6 +260,64 @@ void tree::nonRecPreorder(node *t)
     }
 }
 
+void tree::nonRecPostorder(node *t)
+{
+    stack s;
+    node *temp;
+    int flg;
+    temp = t;
+    while (temp != NULL)
+    {
+        s.push(temp, 0);
+        temp = temp->left;
+    }
+    while (!(s.empty()))
+    {
+        flg = s.flagValue();
+        temp = s.pop();
+        if (flg == 1)
+            std::cout << temp->component << "   ";
+        temp = temp->right;
+        while (temp != NULL)
+        {
+            if (flg == 0)
+                s.push(temp, 1);
+            else
+                s.push(temp, 0);
+            temp = temp->left;
+        }
+    }
+}
+
+void tree::BFS(node *t)
+{
+    Queue *q1 = new Queue;
+    Queue *q2 = new Queue;
+    q1->insert(t);
+    std::cout << t->component;
+    while (!(q1->empty()))
+    {
+        q2 = new Queue;
+        std::cout << std::endl;
+        while (!(q1->empty()))
+        {
+
+            node *t = q1->remove();
+            if (t->left != NULL)
+            {
+                std::cout << t->left->component << "    ";
+                q2->insert(t->left);
+            }
+            if (t->right != NULL)
+            {
+                std::cout << t->right->component << "   ";
+                q2->insert(t->right);
+            }
+        }
+        q1 = q2;
+    }
+}
+
 void tree::menu()
 {
     root = this->create();
@@ -229,6 +334,12 @@ void tree::menu()
     std::cout << "\n\nNON RECURSIVE: " << std::endl;
     std::cout << "\n\nInorder: " << std::endl;
     nonRecInorder(root);
+    std::cout << "\n\nPreorder: " << std::endl;
+    nonRecPreorder(root);
+    std::cout << "\n\nPostorder: " << std::endl;
+    nonRecPostorder(root);
+    std::cout << "\n\nBreadth First Traversal: " << std::endl;
+    BFS(root);
 }
 
 int main()
