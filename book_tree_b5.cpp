@@ -14,7 +14,8 @@ struct node
 class stack
 {
     node *arr[MAX];
-    int flag[MAX], top;
+    bool flag[MAX];
+    int top;
 
 public:
     stack()
@@ -23,8 +24,8 @@ public:
     }
     bool empty();
     void push(node *p);
-    void push(node *p, int f);
-    int flagValue();
+    void push(node *p, bool f);
+    bool flagValue();
     node *pop();
 };
 
@@ -43,7 +44,7 @@ void stack::push(node *p)
     arr[top] = p;
 }
 
-void stack::push(node *p, int f)
+void stack::push(node *p, bool f)
 {
     if (top == -1)
         return;
@@ -52,7 +53,7 @@ void stack::push(node *p, int f)
     flag[top] = f;
 }
 
-int stack::flagValue()
+bool stack::flagValue()
 {
     return flag[top];
 }
@@ -264,27 +265,30 @@ void tree::nonRecPostorder(node *t)
 {
     stack s;
     node *temp;
-    int flg;
+    bool flg;
     temp = t;
     while (temp != NULL)
     {
-        s.push(temp, 0);
+        s.push(temp, false);
         temp = temp->left;
     }
     while (!(s.empty()))
     {
         flg = s.flagValue();
         temp = s.pop();
-        if (flg == 1)
-            std::cout << temp->component << "   ";
-        temp = temp->right;
-        while (temp != NULL)
+        if (flg)
         {
-            if (flg == 0)
-                s.push(temp, 1);
-            else
-                s.push(temp, 0);
-            temp = temp->left;
+            s.push(temp, true);
+            temp = temp->right;
+            while (temp != NULL)
+            {
+                s.push(temp, false);
+                temp = temp->left;
+            }
+        }
+        else
+        {
+            std::cout << temp->component << "   ";
         }
     }
 }
