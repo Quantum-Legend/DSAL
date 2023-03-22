@@ -46,7 +46,7 @@ void stack::push(node *p)
 
 void stack::push(node *p, bool f)
 {
-    if (top == -1)
+    if (top == MAX - 1)
         return;
     top++;
     arr[top] = p;
@@ -276,7 +276,7 @@ void tree::nonRecPostorder(node *t)
     {
         flg = s.flagValue();
         temp = s.pop();
-        if (flg)
+        if (flg == false)
         {
             s.push(temp, true);
             temp = temp->right;
@@ -324,19 +324,20 @@ void tree::BFS(node *t)
 
 void tree::menu()
 {
+    std::cout << "Creating New Binary Tree:\n" << std::endl;
     root = this->create();
     // pass the root node of your binary tree
     std::cout << std::endl;
     printBT(root);
     std::cout << "\n\nRECURSIVE: " << std::endl;
-    std::cout << "\n\nInorder: " << std::endl;
+    std::cout << "Inorder: " << std::endl;
     recInorder(root);
     std::cout << "\n\nPreorder: " << std::endl;
     recPreorder(root);
     std::cout << "\n\nPostorder: " << std::endl;
     recPostorder(root);
     std::cout << "\n\nNON RECURSIVE: " << std::endl;
-    std::cout << "\n\nInorder: " << std::endl;
+    std::cout << "Inorder: " << std::endl;
     nonRecInorder(root);
     std::cout << "\n\nPreorder: " << std::endl;
     nonRecPreorder(root);
