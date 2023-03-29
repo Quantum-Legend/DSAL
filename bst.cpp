@@ -18,72 +18,69 @@ struct node
 class BST
 {
     node *root;
-
-public:
+    public:
     BST()
     {
         root = NULL;
     }
-    node *insert(node *t, int d);
-    void search(int d);
-    void display(node *temp);
-    int min();
-    node *swappedTree();
+    void create();
+    node* insert(node* t, int d);
+    void display(node* t);
     void menu();
 };
 
-node *BST::insert(node *t, int d)
+void BST::create()
 {
-    if (t == NULL)
+    int noOfElements, data;
+    std::cout << "How many elements to be inserted for initializing the binary search tree: ";
+    std::cin >> noOfElements;
+    std::cout << "Enter the first element (ROOT): ";
+    std::cin >> data;
+    root = insert(root, data);
+    for(int i = 1; i < noOfElements; i++)
     {
-        node* p = new node;
-        p->data = d;
-        p->left = p->right = NULL;
-        t = p;
-        return t;
-    }
-    else if(t->data > d)
-    {
-        t->left = insert(t)
+        std::cout << "Enter (" << i+1 << ")th element: ";
+        std::cin >> data;
+        insert(root, data);
     }
 }
 
-void BST::display(node *temp)
+node* BST::insert(node* t, int d)
 {
-    if (temp != NULL)
+    if(t != NULL)
     {
-        display(temp->left);
-        std::cout << temp->data << "   ";
-        display(temp->right);
+        if(t->data > d)
+            t->left = insert(t->left, d);
+        else
+            t->right = insert(t->right, d);
+    }
+    node* p = new node;
+    p->data = d;
+    p->left = NULL;
+    p->right = NULL;
+    return p;
+}
+
+void BST::display(node* t)
+{
+    if(t != NULL)
+    {
+        display(t->left);
+        std::cout << t->data << "   ";
+        display(t->right);
     }
 }
 
 void BST::menu()
 {
-    while (true)
-    {
-        char ch;
-        int d;
-        std::cout << "Insert first element: ";
-        std::cin >> d;
-        root = insert(root, d);
-        std::cout << "Insert new element? (Y/N):  ";
-        std::cin >> ch;
-        if (ch == 'Y')
-        {
-            std::cout << "Enter data: ";
-            std::cin >> d;
-            insert(root, d);
-        }
-        else
-            break;
-    }
-    this->display(root);
+    create();
+    display(root);
+    std::cout << std::endl;
 }
 
 int main()
 {
-    BST tree1;
-    tree1.menu();
+    BST tree;
+    tree.menu();
     return 0;
 }
