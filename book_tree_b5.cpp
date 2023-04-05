@@ -168,7 +168,8 @@ void tree::printBT(const std::string &prefix, const node *BSTnode, bool isLeft)
     {
         std::cout << prefix;
 
-        std::cout << (isLeft ? "|--" : "+--");
+
+        std::cout << (isLeft ? "|--" : "`--");
 
         // print the value of the node
         std::cout << BSTnode->component << std::endl;
