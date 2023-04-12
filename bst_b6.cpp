@@ -169,7 +169,7 @@ void menu(BST tree)
             tree.root = tree.insert(tree.root, n);
             break;
         case 2:
-            std::cout << "The ordered sequnce of the numbers (inorder ttraversal of BST): " << std::endl;
+            std::cout << "The ordered sequnce of the numbers (inorder traversal of BST): " << std::endl;
             tree.display(tree.root);
             std::cout << std::endl;
             break;
