@@ -17,13 +17,19 @@ Consider telephone book database of N clients. Make use of a hash table implemen
 To create ADT that implement the "set" concept.
 
 a. Add (newElement) - Place a value into the set
+
 b. Remove (element) - Remove the value
+
 c. Contains (element) - Return true if element is in collection
-d. Size () - Return number of values in collection, Iterator () - Return an iterator used to loop
-over collection
+
+d. Size () - Return number of values in collection, Iterator () - Return an iterator used to loop over collection
+
 e. Intersection of two sets
+
 f. Union of two sets
+
 g. Difference between two sets
+
 h. Subset
 
 ### Group B - No. 5
@@ -33,8 +39,13 @@ A book consists of chapters, chapters consist of sections and sections consist o
 ### Group B - No. 6
 
 Beginning with an empty binary search tree, Construct binary search tree by inserting the values in the order given. After constructing a binary tree -
+
 i. Insert new node
+
 ii. Find number of nodes in longest path from root
+
 iii. Minimum data value found in the tree
+
 iv. Change a tree so that the roles of the left and right pointers are swapped at every node
+
 v. Search a value
