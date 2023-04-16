@@ -6,6 +6,7 @@ A repository for _Data Structures and Algorithms Laboratory_ (fourth semester)
 * [Group A - No. 4](#Group-A---No.-4)
 * [Group B - No. 5](#Group-B---No.-5)
 * [Group B - No. 6](#Group-B---No.-6)
+* [Group B - No. 11](#Group-B---No.-11)
 
 
 ### Group A - No. 1
@@ -49,3 +50,7 @@ iii. Minimum data value found in the tree
 iv. Change a tree so that the roles of the left and right pointers are swapped at every node
 
 v. Search a value
+
+### Group B - No. 11
+
+A Dictionary stores keywords & its meanings. Provide facility for adding new keywords, deleting keywords, updating values of any entry. Provide facility to display whole data sorted in ascending/ Descending order. Also find how many maximum comparisons may require for finding any keyword. Use Binary Search Tree for implementation. 
