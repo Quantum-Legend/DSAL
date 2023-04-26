@@ -138,11 +138,6 @@ void dictionary::remove(std::string key)
 {
     node *temp = root, *temp2;
     int LRflag;
-    if (convert(key) == convert(root->keyword))
-    {
-        root = NULL;
-        return;
-    }
     while (temp != NULL)
     {
         std::string key_small = convert(key);
@@ -212,14 +207,24 @@ void dictionary::remove(std::string key)
             }
             else
             {
-                node *p = temp->right;
-                while(p->left == NULL)
+                temp2 = temp;
+                node *temp3 = temp->right;
+                while(temp3->left != NULL)
                 {
-                    p = p->left;
+                    temp2 = temp3;
+                    temp3 = temp3->left;
                 }
-                temp->keyword = p->keyword;
-                temp->meaning = p->meaning;
-                remove(p->keyword);
+                if(temp2 != temp)
+                {
+                    temp2->left = temp3->right;
+                }
+                else
+                {
+                    temp2->right = temp3->right;
+                }
+                temp->keyword = temp3->keyword;
+                temp->meaning = temp3->meaning;
+                delete temp3;
                 return;
             }
         }
@@ -237,14 +242,14 @@ int main()
     D.display();
     std::string k, m;
     std::cout << "Enter keyword to update: ";
-    std::cin >> k;
+    std::getline(std::cin >> std::ws, k);
     std::cout << "Enter new meaning: ";
-    std::cin >> m;
+    std::getline(std::cin >> std::ws, m);
     D.update(k, m);
     D.display();
     std::string k2;
     std::cout << "Which key to delete: ";
-    std::cin >> k2;
+    std::getline(std::cin >> std::ws, k2);
     D.remove(k2);
     D.display();
     return 0;

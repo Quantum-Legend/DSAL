@@ -42,6 +42,24 @@ int Stack::pop()
     top--;
     return t;
 }
+class Queue
+{
+    int *arr, capacity, front, rear;
+public:
+    Queue()
+    {
+        capacity = 5;
+        arr = new int[capacity];
+        front = rear = -1;
+    }
+    Queue(int n)
+    {
+        capacity = n;
+        arr = new int[capacity];
+        front = rear = -1;
+    }
+    
+};
 class Graph
 {
     int noOfVertices;
