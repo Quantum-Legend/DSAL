@@ -50,6 +50,7 @@ public:
     void display(node *t);
     void display();
     void update(std::string key, std::string value);
+    void remove(std::string key);
 };
 
 void dictionary::create()
@@ -118,7 +119,7 @@ void dictionary::update(std::string key, std::string value)
     while (temp != NULL)
     {
         std::string key_small = convert(key);
-        std::string tKey_small = temp == NULL ? "" : convert(temp->keyword);
+        std::string tKey_small = (temp == NULL) ? "" : convert(temp->keyword);
         if (key_small == tKey_small)
         {
             temp->meaning = value;
@@ -131,6 +132,99 @@ void dictionary::update(std::string key, std::string value)
             temp = temp->left;
     }
     std::cout << "Word not found in the dictionary" << std::endl;
+}
+
+void dictionary::remove(std::string key)
+{
+    node *temp = root, *temp2;
+    int LRflag;
+    if (convert(key) == convert(root->keyword))
+    {
+        root = NULL;
+        return;
+    }
+    while (temp != NULL)
+    {
+        std::string key_small = convert(key);
+        std::string tKey_small = (temp == NULL) ? "" : convert(temp->keyword);
+        if (key_small > tKey_small)
+        {
+            temp2 = temp;
+            temp = temp->right;
+            LRflag = 1;
+        }
+        else if (key_small < tKey_small)
+        {
+            temp2 = temp;
+            temp = temp->left;
+            LRflag = 0;
+        }
+        else
+        {
+            if (temp->left == NULL && temp->right == NULL)
+            {
+                if (LRflag == 0)
+                {
+                    temp2->left = NULL;
+                    delete temp;
+                    return;
+                }
+                else
+                {
+                    temp2->right = NULL;
+                    delete temp;
+                    return;
+                }
+            }
+            else if (temp->left == NULL)
+            {
+                if (LRflag == 0)
+                {
+                    temp2->left = temp->right;
+                    temp->right = NULL;
+                    delete temp;
+                    return;
+                }
+                else
+                {
+                    temp2->right = temp->right;
+                    temp->right = NULL;
+                    delete temp;
+                    return;
+                }
+            }
+            else if (temp->right == NULL)
+            {
+                if(LRflag == 0)
+                {
+                    temp2->left = temp->left;
+                    temp->left = NULL;
+                    delete temp;
+                    return;
+                }
+                else
+                {
+                    temp2->right = temp->left;
+                    temp->left = NULL;
+                    delete temp;
+                    return;
+                }
+            }
+            else
+            {
+                node *p = temp->right;
+                while(p->left == NULL)
+                {
+                    p = p->left;
+                }
+                temp->keyword = p->keyword;
+                temp->meaning = p->meaning;
+                remove(p->keyword);
+                return;
+            }
+        }
+    }
+    std::cout << "Word not found in the dictionary, remove operation failed." << std::endl;
 }
 
 int main()
@@ -147,6 +241,11 @@ int main()
     std::cout << "Enter new meaning: ";
     std::cin >> m;
     D.update(k, m);
+    D.display();
+    std::string k2;
+    std::cout << "Which key to delete: ";
+    std::cin >> k2;
+    D.remove(k2);
     D.display();
     return 0;
 }
