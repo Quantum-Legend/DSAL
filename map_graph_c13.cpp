@@ -66,6 +66,7 @@ class Graph
     std::string *vertex;
     int **adjacencyMatrix;
 
+
 public:
     Graph();
     Graph(int n);
@@ -74,6 +75,10 @@ public:
     void matrixDisplay();
     void matrixDFS(std::string v);
 };
+void Graph::listRep(std::string *vertex)
+{
+    
+}
 void Graph::matrixDFS(std::string v)
 {
     int p;
@@ -86,7 +91,7 @@ void Graph::matrixDFS(std::string v)
             p = i;
         }
     }
-    Stack s;
+    Stack s(noOfVertices);
     s.push(p);
     while (!(s.empty()))
     {
@@ -98,10 +103,11 @@ void Graph::matrixDFS(std::string v)
         }
         for (int i = 0; i < noOfVertices; i++)
         {
-            if (adjacencyMatrix[p][i] == 1 && !(visited[p]))
+            if (adjacencyMatrix[p][i] == 1 && !(visited[i]))
                 s.push(i);
         }
     }
+    std::cout << std::endl;
 }
 void Graph::matrixRep()
 {
@@ -159,7 +165,10 @@ Graph::Graph(int n)
 }
 int main()
 {
-    Graph G1;
+    int n;
+    std::cout << "Enter number of vertices: ";
+    std::cin >> n;
+    Graph G1(n);
     G1.matrixRep();
     std::cout << "\nThe matrix representation is: " << std::endl;
     G1.matrixDisplay();
