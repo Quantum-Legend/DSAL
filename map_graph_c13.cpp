@@ -1,11 +1,8 @@
-/* Represent a given graph using adjacency matrix/list to perform DFS and using adjacency
-list to perform BFS. Use the map of the area around the college as the graph. Identify the
-prominent land marks as nodes and perform DFS and BFS on that. */
+/* Represent a given graph using adjacency matrix/list to perform DFS and using adjacency list to perform BFS. Use the map of the area around the college as the graph. Identify the prominent land marks as nodes and perform DFS and BFS on that. */
 #include <iostream>
 class Stack
 {
     int *arr, top, capacity;
-
 public:
     Stack()
     {
@@ -42,6 +39,43 @@ int Stack::pop()
     top--;
     return t;
 }
+struct node
+{
+    int data;
+    node *next;
+};
+class LinkedList
+{
+public:
+    node *head;
+    LinkedList()
+    {
+        head = NULL;
+    }
+    void insert(int p);
+};
+void LinkedList::insert(int p)
+{
+    node *t;
+    t = head;
+    if (head == NULL)
+    {
+        t = new node;
+        t->data = p;
+        t->next = NULL;
+        head = t;
+    }
+    else
+    {
+        while (t->next != NULL)
+        {
+            t = t->next;
+        }
+        t->next = new node;
+        t->next->data = p;
+        t->next->next = NULL;
+    }
+}
 class Queue
 {
     int *arr, capacity, front, rear;
@@ -58,56 +92,69 @@ public:
         arr = new int[capacity];
         front = rear = -1;
     }
-    
+    bool empty();
+    void enqueue(int p);
+    int dequeue();
 };
+bool Queue::empty()
+{
+    if (front == -1 && rear == -1)
+        return true;
+    return false;
+}
+void Queue::enqueue(int p)
+{
+    if (rear == capacity - 1)
+        return;
+    if (front == -1)
+        front = 0;
+    rear++;
+    arr[rear] = p;
+}
+int Queue::dequeue()
+{
+    int t = arr[front];
+    if (front == rear)
+        front = rear = -1;
+    else
+        front++;
+    return t;
+}
 class Graph
 {
     int noOfVertices;
     std::string *vertex;
     int **adjacencyMatrix;
-
-
+    LinkedList *edgeList;
 public:
     Graph();
     Graph(int n);
     void matrixRep();
-    void listRep(std::string *vertex);
+    void listRep();
     void matrixDisplay();
+    void listDisplay();
     void matrixDFS(std::string v);
+    void listBFS(std::string v);
 };
-void Graph::listRep(std::string *vertex)
+Graph::Graph()
 {
-    
-}
-void Graph::matrixDFS(std::string v)
-{
-    int p;
-    bool visited[noOfVertices];
+    noOfVertices = 5;
+    vertex = new std::string[noOfVertices];
     for (int i = 0; i < noOfVertices; i++)
     {
-        visited[i] = false;
-        if (vertex[i] == v)
-        {
-            p = i;
-        }
+        std::cout << "Enter (" << i + 1 << ")th vertex data: ";
+        std::cin >> vertex[i];
     }
-    Stack s(noOfVertices);
-    s.push(p);
-    while (!(s.empty()))
+}
+Graph::Graph(int n)
+{
+    noOfVertices = n;
+    vertex = new std::string[noOfVertices];
+    for (int i = 0; i < noOfVertices; i++)
     {
-        p = s.pop();
-        if (!(visited[p]))
-        {
-            std::cout << vertex[p] << "   ";
-            visited[p] = true;
-        }
-        for (int i = 0; i < noOfVertices; i++)
-        {
-            if (adjacencyMatrix[p][i] == 1 && !(visited[i]))
-                s.push(i);
-        }
+        std::cout << "Enter (" << i + 1 << ")th vertex data: ";
+        std::cin >> vertex[i];
     }
-    std::cout << std::endl;
 }
 void Graph::matrixRep()
 {
@@ -143,24 +190,94 @@ void Graph::matrixDisplay()
         std::cout << std::endl;
     }
 }
-Graph::Graph()
+void Graph::matrixDFS(std::string v)
 {
-    noOfVertices = 5;
-    vertex = new std::string[noOfVertices];
+    int p;
+    bool visited[noOfVertices];
     for (int i = 0; i < noOfVertices; i++)
     {
-        std::cout << "Enter (" << i + 1 << ")th vertex data: ";
-        std::cin >> vertex[i];
+        visited[i] = false;
+        if (vertex[i] == v)
+        {
+            p = i;
+        }
+    }
+    Stack s(noOfVertices);
+    s.push(p);
+    while (!(s.empty()))
+    {
+        p = s.pop();
+        if (!(visited[p]))
+        {
+            std::cout << vertex[p] << "   ";
+            visited[p] = true;
+        }
+        for (int i = 0; i < noOfVertices; i++)
+        {
+            if (adjacencyMatrix[p][i] == 1 && !(visited[i]))
+                s.push(i);
+        }
+    }
+    std::cout << std::endl;
+}
+void Graph::listRep()
+{
+    edgeList = new LinkedList[noOfVertices];
+    for (int i = 0; i < noOfVertices; i++)
+    {
+        for (int j = 0; j < noOfVertices; j++)
+        {
+            if (adjacencyMatrix[i][j] == 1)
+            {
+                edgeList[i].insert(j);
+            }
+        }
     }
 }
-Graph::Graph(int n)
+void Graph::listDisplay()
 {
-    noOfVertices = n;
-    vertex = new std::string[noOfVertices];
     for (int i = 0; i < noOfVertices; i++)
     {
-        std::cout << "Enter (" << i + 1 << ")th vertex data: ";
-        std::cin >> vertex[i];
+        std::cout << vertex[i] << ": ";
+        node *t = edgeList[i].head;
+        while (t->next != NULL)
+        {
+            std::cout << vertex[t->data] << "->";
+            t = t->next;
+        }
+        std::cout << vertex[t->data];
+        std::cout << std::endl;
+    }
+}
+void Graph::listBFS(std::string v)
+{
+    int p;
+    bool visited[noOfVertices];
+    for (int i = 0; i < noOfVertices; i++)
+    {
+        visited[i] = false;
+        if (vertex[i] == v)
+        {
+            p = i;
+        }
+    }
+    Queue q(noOfVertices);
+    visited[p] = true;
+    q.enqueue(p);
+    while(!(q.empty()))
+    {
+        p = q.dequeue();
+        node* t = edgeList[p].head;
+        while(t != NULL)
+        {
+            if(visited[t->data] == false)
+            {
+                std::cout << vertex[t->data] << "   ";
+                visited[t->data] == true;
+                q.enqueue(t->data);
+                t = t->next;
+            }
+        }
     }
 }
 int main()
@@ -170,11 +287,17 @@ int main()
     std::cin >> n;
     Graph G1(n);
     G1.matrixRep();
-    std::cout << "\nThe matrix representation is: " << std::endl;
+    std::cout << "\nThe Matrix representation is: " << std::endl;
     G1.matrixDisplay();
     std::string vtx;
-    std::cout << "\nEnter which vertex you want to start with: " << std::endl;
+    std::cout << "\nEnter which vertex you want to start with for DFS: " << std::endl;
     std::getline(std::cin >> std::ws, vtx);
     G1.matrixDFS(vtx);
+    std::cout << "\nThe Edge List representation is: " << std::endl;
+    G1.listRep();
+    G1.listDisplay();
+    std::cout << "\nEnter which vertex you want to start with for BFS: " << std::endl;
+    std::getline(std::cin >> std::ws, vtx);
+    G1.listBFS(vtx);
     return 0;
 }
