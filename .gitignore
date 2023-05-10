@@ -1,3 +1,7 @@
 *.exe
+<<<<<<< HEAD
 *.pdf
 *.docx
+=======
+.vscode
+>>>>>>> refs/remotes/origin/main

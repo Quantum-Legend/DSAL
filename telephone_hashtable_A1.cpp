@@ -195,7 +195,7 @@ int main()
   hash book1, book2;
 
   do{
-    std::cout << "1) Insert \n2) Search \n3) Display \n4) Exit" << std::endl;
+    std::cout << "1) Insert \n2) Search \n3)Display \n4)Exit" << std::endl;
     std::cin >> ch;
 
     switch(ch){
