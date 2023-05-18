@@ -39,8 +39,6 @@ int main()
         r[i][i + 1] = i + 1;
         c[i][i + 1] = q[i] + q[i + 1] + p[i + 1];
     }
-    w[n][n] = q[n];
-    r[n][n] = c[n][n] = 0;
     for (m = 2; m <= n; m++)
     {
         for (i = 0; i <= n - m; i++)
