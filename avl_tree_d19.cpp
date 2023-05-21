@@ -32,12 +32,13 @@ public:
     node *rotateLeft(node *t);
     node *createNode(std::string keyword, std::string meaning);
     node *insertNode(node *t, std::string keyword, std::string value);
-    node *deleteNode(std::string keyword);
+    node* deleteNode(std::string keyword);
     void preorder(node *t);
     void inorder(node *t);
     void insertNode(std::string keyword, std::string meaning);
     void preorder();
     void inorder();
+    void updateNode(std::string keyword, std::string meaning);
 };
 int AVL::heightOfNode(node *t) {
     if (t == NULL)
@@ -146,6 +147,111 @@ AVL::AVL() {
 void AVL::insertNode(std::string keyword, std::string meaning) {
     root = insertNode(root, keyword, meaning);
 }
+void AVL::updateNode(std::string keyword, std::string meaning) {
+    node *temp = root;
+    while (temp != NULL) {
+        std::string key_small = convertToLowerCase(keyword);
+        std::string tKey_small = (temp == NULL) ? "" : convertToLowerCase(temp->key);
+        if (key_small == tKey_small) {
+            temp->value = meaning;
+            std::cout << "Meaning of \"" << temp->key << "\" updated!" << std::endl;
+            return;
+        }
+        else if (key_small > tKey_small)
+            temp = temp->right;
+        else
+            temp = temp->left;
+    }
+    std::cout << "Word not found in the dictionary" << std::endl;
+}
+node* AVL::deleteNode(std::string keyword) {
+    node *temp = root, *temp2;
+    int LRflag;
+    while (temp != NULL) {
+        std::string key_small = convertToLowerCase(keyword);
+        std::string tKey_small = (temp == NULL) ? "" : convertToLowerCase(temp->key);
+        if (key_small > tKey_small) {
+            temp2 = temp;
+            temp = temp->right;
+            LRflag = 1;
+        }
+        else if (key_small < tKey_small) {
+            temp2 = temp;
+            temp = temp->left;
+            LRflag = 0;
+        }
+        else {
+            if (temp->left == NULL && temp->right == NULL) {
+                if (LRflag == 0) {
+                    temp2->left = NULL;
+                    delete temp;
+                }
+                else {
+                    temp2->right = NULL;
+                    delete temp;
+                }
+            }
+            else if (temp->left == NULL) {
+                if (LRflag == 0) {
+                    temp2->left = temp->right;
+                    temp->right = NULL;
+                    delete temp;
+                }
+                else {
+                    temp2->right = temp->right;
+                    temp->right = NULL;
+                    delete temp;
+                }
+            }
+            else if (temp->right == NULL) {
+                if(LRflag == 0) {
+                    temp2->left = temp->left;
+                    temp->left = NULL;
+                    delete temp;
+                }
+                else {
+                    temp2->right = temp->left;
+                    temp->left = NULL;
+                    delete temp;
+                }
+            }
+            else {
+                temp2 = temp;
+                node *temp3 = temp->right;
+                while(temp3->left != NULL) {
+                    temp2 = temp3;
+                    temp3 = temp3->left;
+                }
+                if(temp2 != temp)
+                    temp2->left = temp3->right;
+                else
+                    temp2->right = temp3->right;
+                temp->key = temp3->key;
+                temp->value = temp3->value;
+                delete temp3;
+            }
+        }
+        int BF = balance_factor(temp);
+        // Left Left (LL) Case
+        if (BF > 1 && key_small < tKey_small)
+            return rotateRight(temp);
+        // Right Right (RR) case
+        if (BF < -1 && key_small > tKey_small)
+            return rotateLeft(temp);
+        // Left Right (LR) case
+        if (BF > 1 && key_small > tKey_small) {
+            temp->left = rotateLeft(temp->left);
+            return rotateRight(temp);
+        }
+        // Right Left (RL) case
+        if (BF < -1 && key_small < tKey_small) {
+            temp->right = rotateRight(temp->right);
+            return rotateLeft(temp);
+        }
+    }
+    std::cout << "Word not found in the dictionary, remove operation failed." << std::endl;
+    return NULL;
+}
 int main() {
     AVL MyTree;
     std::cout << "In Preorder:" << std::endl;
@@ -153,14 +259,30 @@ int main() {
     std::cout << "In Inorder:" << std::endl;
     MyTree.inorder();
     std::string keyword, meaning;
-    std::cout << "Enter new keyword to be inserted - ";
+    std::cout << "\nEnter new keyword to be inserted - ";
     std::getline(std::cin >> std::ws, keyword);
     std::cout << "Enter its meaning:" << std::endl;
     std::getline(std::cin >> std::ws, meaning);
     MyTree.insertNode(keyword, meaning);
-    std::cout << "In Preorder:" << std::endl;
+    std::cout << "\nIn Preorder:" << std::endl;
     MyTree.preorder();
-    std::cout << "In Inorder:" << std::endl;
+    std::cout << "\nIn Inorder:" << std::endl;
+    MyTree.inorder();
+    std::cout << "\nEnter keyword to be updated - ";
+    std::getline(std::cin >> std::ws, keyword);
+    std::cout << "Enter its new meaning:" << std::endl;
+    std::getline(std::cin >> std::ws, meaning);
+    MyTree.updateNode(keyword, meaning);
+    std::cout << "\nIn Preorder:" << std::endl;
+    MyTree.preorder();
+    std::cout << "\nIn Inorder:" << std::endl;
+    MyTree.inorder();
+    std::cout << "\nEnter keyword to be deleted - ";
+    std::getline(std::cin >> std::ws, keyword);
+    MyTree.deleteNode(keyword);
+    std::cout << "\nIn Preorder:" << std::endl;
+    MyTree.preorder();
+    std::cout << "\nIn Inorder:" << std::endl;
     MyTree.inorder();
     return 0;
 }
