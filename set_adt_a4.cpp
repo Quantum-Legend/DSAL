@@ -125,14 +125,24 @@ Set* Set::uni(Set B)
 Set* Set::diff(Set B)
 {
     Set *C = new Set(this->capacity + B.capacity);
+    int flag;
     for (int i = 0; i < this->top + 1; i++)
     {
         for (int j = 0; j < B.top + 1; j++)
         {
-            if (this->arr[i] != B.arr[j])
+            if (this->arr[i] == B.arr[j])
             {
-                C->add(this->arr[i]);
+                flag = 0;
+                break;
             }
+            else
+            {
+                flag = 1;
+            }
+        }
+        if (flag == 1)
+        {
+            C->add(this->arr[i]);
         }
     }
     return C;
