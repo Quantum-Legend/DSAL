@@ -1,23 +1,20 @@
 /*Read the marks obtained by students of second year in an online examination of
 particular subject. Find out maximum and minimum marks obtained in that subject. Use
 heap data structure. Analyze the algorithm.*/
-
 #include <iostream>
 using namespace std;
 #define Max 10
-
 class heap
 {
     float Minheap[Max], Maxheap[Max];
-
 public:
     void CreateHeap();
     void InsertMinHeap(float);
     void InsertMaxHeap(float);
-    void UpAdjestMinHeap(int);
+    void UpAdjustMinHeap(int);
     void UpAdjustMaxHeap(int);
-    void DownAdjestMinHeap();
-    void DownAdjestMaxHeap();
+    void DownAdjustMinHeap();
+    void DownAdjustMaxHeap();
     int DeleteHeapMinHeap();
     int DeleteHeapMaxHeap();
     float FindMin();
@@ -29,7 +26,7 @@ void heap::InsertMinHeap(float x)
     int n = Minheap[0];
     Minheap[n + 1] = x;
     Minheap[0] = n + 1;
-    UpAdjestMinHeap(n + 1);
+    UpAdjustMinHeap(n + 1);
 }
 void heap::InsertMaxHeap(float x)
 {
@@ -39,7 +36,7 @@ void heap::InsertMaxHeap(float x)
     UpAdjustMaxHeap(n + 1);
 }
 
-void heap::UpAdjestMinHeap(int u)
+void heap::UpAdjustMinHeap(int u)
 {
     while (u > 1 && Minheap[u] < Minheap[u / 2])
     {
@@ -65,7 +62,6 @@ void heap::UpAdjustMaxHeap(int u)
         u = u / 2;
     }
 }
-
 void heap::CreateHeap()
 {
     int n;
@@ -82,32 +78,27 @@ void heap::CreateHeap()
         InsertMinHeap(x);
     }
 }
-
 float heap::FindMAX()
     
 {   
-    return Maxheap[1];
-    cout<<endl;
+    /* cout<<endl;
     int a = Maxheap[0];
     for (int i = 0; i < a+1; i++)
     {
         cout << Maxheap[i] <<"    ";
-    }
+    } */
+    return Maxheap[1];
 }
-
 float heap::FindMin()
 {
-    return Minheap[1];
-    cout<<endl;
+    /* cout<<endl;
     int a = Minheap[0];
     for (int i = 0; i < a+1; i++)
     {
         cout << Minheap[i] <<"    ";
-    }
-
-    
+    } */
+    return Minheap[1];
 }
-
 int main()
 {
     heap H;
