@@ -22,9 +22,10 @@ class Database_file
 private:
     Student_data stud_rec;
 
+
 public:
     void CreateAFile();
-    void AddNewRecord();
+    void AddNewRecord(Student_data rec1);
     void DisplayFileContent();
     void SearchRecord();
     void ModifyRecord();
@@ -42,19 +43,78 @@ void Database_file::CreateAFile()
     }
     fstream file("Student_data.dat", ios::out | ios::binary); // open file in write mode to create new database
     cout << "\nNew file Student_data.dat created..\n";
-    AddNewRecord(); // add initial record
+    AddNewRecord(stud_rec); // add initial record
     file.close();
 }
 
-void Database_file::AddNewRecord()
+void Database_file::AddNewRecord(Student_data rec1)
 {
-    cout << "\nFill student details :\nRoll No. : ";
-    cin >> stud_rec.Roll_number;
-    cin.ignore();
-    fstream write_file("Student_data.dat", ios::app | ios::binary); // open file in append mode
-    fstream read_file("Student_data.dat", ios::in | ios::binary);   // open file in read with different pointer
-    Student_data d1;
-    read_file.read((char*)&d1,sizeof(d1));
+    int n,i,k;
+    fstream file("Student_data.dat", ios::out | ios::in);
+    rec1.status=0;
+    file.seekg(0,ios::end);
+    n= file.tellg()/sizeof(Student_data);
+
+    if(n==0)
+    {
+        file.write((char*)&rec1,sizeof(Student_data));
+        file.close();
+        return;
+    }
+    i = n-1;
+
+    while(i>=0)
+    {
+        file.seekg(i*sizeof(Student_data),ios::beg);
+        file.read((char*)&stud_rec,sizeof(Student_data));
+        if(stud_rec.Roll_number>rec1.Roll_number)
+        {
+            file.seekp(i+1*sizeof(Student_data),ios::beg);
+            file.write((char*)&stud_rec,sizeof(Student_data));
+        }
+        else
+            break;
+        i--;
+    }
+    i++;
+    file.seekp(i*sizeof(Student_data),ios::beg);
+    file.write((char*)&rec1,sizeof(Student_data));
+    file.close();    
+}
+
+void Database_file::DisplayFileContent()
+{
+    int i = 1,n;
+    fstream file("Student_data.dat", ios::in | ios::binary);
+    file.seekg(0,ios::end);
+    n=file.tellg()/sizeof(Student_data);
+    file.seekg(0,ios::beg);
+    for(i=1;i<=n;i++)
+    {
+        file.read((char*)&stud_rec,sizeof(stud_rec));
+        if(stud_rec.status==0)
+        cout<<stud_rec.Roll_number<<" "<<stud_rec.Name<<" "<<stud_rec.Division<<" "<<stud_rec.Address<<endl;
+        else
+        cout<<"Record deleted"<<endl;
+    }
+    file.close();
+}
+
+void Database_file::DeleteRecord()
+{
+    int i,n;
+    fstream file("Student_data.dat", ios::out | ios::in);
+    file.seekg(0,ios::)
     
 
 }
+
+
+
+
+
+
+
+
+
+
