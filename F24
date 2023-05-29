@@ -1,0 +1,255 @@
+#include <iostream>
+
+#include <fstream>
+
+using namespace std;
+
+// Employee record structure
+
+struct Employee {
+
+    int emp_id;
+
+    string name;
+
+    string designation;
+
+    double salary;
+
+};
+
+// Function to add an employee
+
+void addEmployee() {
+
+    Employee emp;
+
+    cout << "Enter Employee ID: ";
+
+    cin >> emp.emp_id;
+
+    ifstream indexFile("index_file.dat", ios::binary);
+
+    int found = 0;
+
+    while (indexFile.read(reinterpret_cast<char*>(&emp), sizeof(Employee))) {
+
+        if (emp.emp_id == emp.emp_id) {
+
+            cout << "Employee already exists!" << endl;
+
+            found = 1;
+
+            break;
+
+        }
+
+    }
+
+    indexFile.close();
+
+    if (found == 0) {
+
+        cout << "Enter Name: ";
+
+        cin.ignore();
+
+        getline(cin, emp.name);
+
+        cout << "Enter Designation: ";
+
+        getline(cin, emp.designation);
+
+        cout << "Enter Salary: ";
+
+        cin >> emp.salary;
+
+        // Append the record to the data file
+
+        ofstream dataFile("data_file.dat", ios::binary | ios::app);
+
+        dataFile.write(reinterpret_cast<char*>(&emp), sizeof(Employee));
+
+        dataFile.close();
+
+        // Update the index file
+
+        ofstream indexFile("index_file.dat", ios::binary | ios::app);
+
+        indexFile.write(reinterpret_cast<char*>(&emp), sizeof(Employee));
+
+        indexFile.close();
+
+        cout << "Employee added successfully!" << endl;
+
+    }
+
+}
+
+// Function to delete an employee
+
+void deleteEmployee() {
+
+    int empId;
+
+    cout << "Enter Employee ID: ";
+
+    cin >> empId;
+
+    ifstream indexFile("index_file.dat", ios::binary);
+
+    ofstream tempFile("temp_file.dat", ios::binary);
+
+    Employee emp;
+
+    bool found = false;
+
+    while (indexFile.read(reinterpret_cast<char*>(&emp), sizeof(Employee))) {
+
+        if (emp.emp_id == empId) {
+
+            found = true;
+
+            continue;
+
+        }
+
+        tempFile.write(reinterpret_cast<char*>(&emp), sizeof(Employee));
+
+    }
+
+    indexFile.close();
+
+    tempFile.close();
+
+    if (found) {
+
+        remove("index_file.dat");
+
+        rename("temp_file.dat", "index_file.dat");
+
+        cout << "Employee deleted successfully!" << endl;
+
+    } else {
+
+        cout << "Employee not found!" << endl;
+
+        remove("temp_file.dat");
+
+    }
+
+}
+
+// Function to display employee information
+
+void displayEmployee() {
+
+    int empId;
+
+    cout << "Enter Employee ID: ";
+
+    cin >> empId;
+
+    ifstream indexFile("index_file.dat", ios::binary);
+
+    Employee emp;
+
+    bool found = false;
+
+    while (indexFile.read(reinterpret_cast<char*>(&emp), sizeof(Employee))) {
+
+        if (emp.emp_id == empId) {
+
+            found = true;
+
+            break;
+
+        }
+
+    }
+
+    indexFile.close();
+
+    if (found) {
+
+        ifstream dataFile("data_file.dat", ios::binary);
+
+        dataFile.seekg((emp.emp_id - 1) * sizeof(Employee));
+
+        dataFile.read(reinterpret_cast<char*>(&emp), sizeof(Employee));
+
+        dataFile.close();
+
+        cout << "Employee ID: " << emp.emp_id << endl;
+
+        cout << "Name: " << emp.name << endl;
+
+        cout << "Designation: " << emp.designation << endl;
+
+        cout << "Salary: " << emp.salary << endl;
+
+    } else {
+
+        cout << "Employee not found!" << endl;
+
+    }
+
+}
+
+int main() {
+
+    int choice;
+
+    while (true) {
+
+        cout << "Menu:\n";
+
+        cout << "1. Add Employee\n";
+
+        cout << "2. Delete Employee\n";
+
+        cout << "3. Display Employee Information\n";
+
+        cout << "4. Exit\n";
+
+        cout << "Enter your choice: ";
+
+        cin >> choice;
+
+        switch (choice) {
+
+            case 1:
+
+                addEmployee();
+
+                break;
+
+            case 2:
+
+                deleteEmployee();
+
+                break;
+
+            case 3:
+
+                displayEmployee();
+
+                break;
+
+            case 4:
+
+                exit(0);
+
+            default:
+
+                cout << "Invalid choice. Please try again." << endl;
+
+        }
+
+        cout << endl;
+
+    }
+
+    return 0;
+
+}
