@@ -128,6 +128,7 @@ class Graph
 	int noOfVertices;
 	std::string *vertex;
 	int **adjacencyMatrix;
+	bool *visited;
 	LinkedList *edgeList;
 
 public:
@@ -197,7 +198,7 @@ void Graph::matrixDisplay()
 void Graph::matrixDFS(std::string v)
 {
 	int p;
-	bool visited[noOfVertices];
+	visited = new bool[noOfVertices];
 	for (int i = 0; i < noOfVertices; i++)
 	{
 		visited[i] = false;
@@ -256,7 +257,7 @@ void Graph::listDisplay()
 void Graph::listBFS(std::string v)
 {
 	int p;
-	bool visited[noOfVertices];
+	visited = new bool[noOfVertices];
 	for (int i = 0; i < noOfVertices; i++)
 	{
 		visited[i] = false;
