@@ -1,242 +1,299 @@
-/* A Dictionary stores keywords & its meanings. Provide facility for adding new keywords, deleting keywords, updating values of any entry. Provide facility to display whole data sorted in ascending/descending order. Also find how many maximum comparisons may require for finding any keyword. Use Height balance tree and find the complexity for finding a keyword */
 #include <iostream>
 #include <string>
 using namespace std;
-class node
+
+struct AVLnode
 {
 public:
-    string k;
-    string m;
-    class node *left;
-    class node *right;
+	string cWord;
+	string cMean;
+	AVLnode *left, *right;
+	int iHt;
 };
-class dict
+
+class AVLtree
 {
+
 public:
-    node *root;
-    void create();
-    void disp(node *);
-    void insert(node *root, node *temp);
-    int search(node *, string);
-    int update(node *, string);
-    node *del(node *, string);
-    node *min(node *);
+	AVLnode *Root;
+	AVLtree()
+	{
+		Root = NULL;
+	}
+	AVLnode *insert(AVLnode *, string, string);
+	AVLnode *deletE(AVLnode *, string);
+	AVLnode *LL(AVLnode *);
+	AVLnode *RR(AVLnode *);
+	AVLnode *LR(AVLnode *);
+	AVLnode *RL(AVLnode *);
+	int height(AVLnode *);
+	int bFactor(AVLnode *);
+	void inOrder(AVLnode *);
+	void search(AVLnode *, string word);
+	void update(AVLnode *,string word);
 };
-void dict ::create()
+
+AVLnode *AVLtree::insert(AVLnode *root, string nWord, string nMean)
 {
-    class node *temp;
-    int ch;
-    do
-    {
-        temp = new node;
-        cout <<"\nEnter Keyword :";
-        cin >> temp->k;
-        cout <<"\nEnter Meaning :";
-        cin >> temp->m;
-        temp->left = NULL;
-        temp->right = NULL;
-        if (root == NULL)
-        {
-            root = temp;
+	if (root == NULL)
+	{
+		root = new AVLnode;
+		root->left = root->right = NULL;
+		root->cWord = nWord;
+		root->cMean = nMean;
+		root->iHt = 0;
+	}
+	else if (root->cWord > nWord)
+	{
+		root->left = insert(root->left, nWord, nMean);
+	}
+	else
+	{
+		root->right = insert(root->right, nWord, nMean);
+	}
+
+	root->iHt = max(height(root->left), height(root->right)) + 1;
+
+	if (bFactor(root) == 2)
+	{
+		if (root->left->cWord > nWord)
+			root = RR(root);
+		else
+			root = LR(root);
+	}
+
+	if (bFactor(root) == -2)
+	{
+		if (root->right->cWord > nWord)
+			root = RL(root);
+		else
+			root = LL(root);
+	}
+
+	return root;
+}
+
+AVLnode *AVLtree::deletE(AVLnode *curr, string x)
+{
+	AVLnode *temp;
+	if (curr == NULL)
+	{
+		cout << "\nWord not present!\n";
+		return curr;
+	}
+
+	else if (x > curr->cWord)
+		curr->right = deletE(curr->right, x);
+
+	else if (x < curr->cWord)
+		curr->left = deletE(curr->left, x);
+
+	else if (curr->right == NULL || curr->left == NULL)
+	{
+		curr = curr->left ? curr->left : curr->right;
+		cout << "\nWord deleted Successfully!\n";
+	}
+
+	else
+	{
+		temp = curr->right;
+		while (temp->left)
+			temp = temp->left;
+		curr->cWord = temp->cWord;
+		curr->cMean = temp->cMean;
+		curr->right = deletE(curr->right, temp->cWord);
+	}
+
+	if (curr == NULL)
+		return curr;
+
+	curr->iHt = max(height(curr->left), height(curr->right)) + 1;
+
+	if (bFactor(curr) == 2)
+	{
+		if (bFactor(curr->left) >= 0)
+			curr = RR(curr);
+		else
+			curr = LR(curr);
+	}
+
+	if (bFactor(curr) == -2)
+	{
+		if (bFactor(curr->right) <= 0)
+			curr = LL(curr);
+		else
+			curr = RL(curr);
+	}
+
+	return (curr);
+}
+
+int AVLtree::height(AVLnode *curr)
+{
+	if (curr == NULL)
+		return -1;
+	else
+		return curr->iHt;
+}
+
+int AVLtree::bFactor(AVLnode *curr)
+{
+	int lh = 0, rh = 0;
+	if (curr == NULL)
+		return 0; 
+	else
+		return height(curr->left) - height(curr->right);
+}
+
+AVLnode *AVLtree::RR(AVLnode *curr)
+{
+	AVLnode *temp = curr->left;
+	curr->left = temp->right;
+	temp->right = curr;
+	curr->iHt = max(height(curr->left), height(curr->right)) + 1;
+	temp->iHt = max(height(temp->left), height(temp->right)) + 1;
+	return temp;
+}
+
+AVLnode *AVLtree::LL(AVLnode *curr)
+{
+	AVLnode *temp = curr->right;
+	curr->right = temp->left;
+	temp->left = curr;
+	curr->iHt = max(height(curr->left), height(curr->right)) + 1;
+	temp->iHt = max(height(temp->left), height(temp->right)) + 1;
+	return temp;
+}
+
+AVLnode *AVLtree::RL(AVLnode *curr)
+{
+	curr->right = RR(curr->right);
+	return LL(curr);
+}
+
+AVLnode *AVLtree::LR(AVLnode *curr)
+{
+	curr->left = LL(curr->left);
+	return RR(curr);
+}
+
+void AVLtree::inOrder(AVLnode *curr)
+{
+	if (curr != NULL)
+	{
+		inOrder(curr->left);
+		cout << "\n\t" << curr->cWord << "\t" << curr->cMean;
+		inOrder(curr->right);
+	}
+}
+void AVLtree::search(AVLnode *curr, string x)
+{
+	int comparisons = 0;
+	if (curr == NULL)
+	{
+		cout << "\nWord not present!\n";
+		return;
+	}
+
+	while (curr != NULL)
+	{
+		comparisons++;
+		if (x == curr->cWord)
+		{
+			cout << "\nWord found!\n";
+			cout << "Number of comparisons: " << comparisons << endl;
+			return;
+		}
+		else if (x > curr->cWord)
+			curr = curr->right;
+		else
+			curr = curr->left;
+	}
+}
+
+void AVLtree::update (AVLnode* root, string word) {
+	string newMeaning;
+	cout<<"Enter the New Meaning of the Word: ";
+	getline(cin,newMeaning);
+    AVLnode* curr = root;
+
+    while (curr != NULL) {
+        if (word == curr -> cWord) {
+            curr -> cMean = newMeaning;
+            return;
         }
-        else
-        {
-            insert(root, temp);
-        }
-        cout <<"\nDo u want to add more(y = 1 / n = 0) :";
-        cin >> ch;
-    } while (ch == 1);
-}
-void dict ::insert(node *root, node *temp)
-{
-    if (temp->k < root->k)
-    {
-        if (root->left == NULL)
-            root->left = temp;
-        else
-            insert(root->left, temp);
-    }
-    else
-    {
-        if (root->right == NULL)
-            root->right = temp;
-        else
-            insert(root->right, temp);
+        else if (word > curr -> cWord)
+            curr = curr -> right;
+        else if(word<curr->cWord)
+            curr = curr -> left;
+		else
+			cout<<"Word Not Found"<<endl;
     }
 }
-void dict::disp(node *root)
-{
-    if (root != NULL)
-    {
-        disp(root->left);
-        cout <<"\n Key Word :"<< root->k;
-        cout <<"\t Meaning :"<< root->m;
-        disp(root->right);
-    }
-}
-int dict ::search(node *root, string k)
-{
-    int c = 0;
-    while (root != NULL)
-    {
-        c++;
-        if (k == root->k)
-        {
-            cout <<"\nNo of Comparisons :"<< c;
-            return 1;
-        }
-        if (k < root->k)
-            root = root->left;
-        if (k > root->k)
-            root = root->right;
-    }
-    return -1;
-}
-int dict ::update(node *root, string k)
-{
-    while (root != NULL)
-    {
-        if (k == root->k)
-        {
-            cout <<"\nEnter New Meaning ofKeyword" << root->k;
-            cin >> root->m;
-            return 1;
-        }
-        if (k < root->k)
-            root = root->left;
-        if (k > root->k)
-            root = root->right;
-    }
-    return -1;
-}
-node *dict ::del(node *root, string k)
-{
-    node *temp;
-    if (root == NULL)
-    {
-        cout <<"\nElement No Found";
-        return root;
-    }
-    if (k < root->k)
-    {
-        root->left = del(root->left, k);
-        return root;
-    }
-    if (k > root->k)
-    {
-        root->right = del(root->right, k);
-        return root;
-    }
-    if (root->right == NULL && root->left == NULL)
-    {
-        temp = root;
-        delete temp;
-        return NULL;
-    }
-    if (root->right == NULL)
-    {
-        temp = root;
-        root = root->left;
-        delete temp;
-        return root;
-    }
-    else if (root->left == NULL)
-    {
-        temp = root;
-        root = root->right;
-        delete temp;
-        return root;
-    }
-    temp = min(root->right);
-    root->k = temp->k;
-    root->right = del(root->right, temp->k);
-    return root;
-}
-node *dict ::min(node *q)
-{
-    while (q->left != NULL)
-    {
-        q = q->left;
-    }
-    return q;
-}
+
+
 int main()
 {
-    int ch;
-    dict d;
-    d.root = NULL;
+	int ch, n;
+	AVLtree avl;
+	AVLnode *temp = NULL;
+	string word;
+	string mean;
 
-    do
-    {
-        cout <<"\nMenu\n1.Create\n2.Disp\n3.Search\n4.Update\n5.Delete\nEnter Ur CH :";
-        cin >> ch;
-        switch (ch)
-        {
-        case 1:
-            d.create();
-            break;
-        case 2:
-            if (d.root == NULL)
-            {
-                cout <<"\nNo any Keyword";
-            }
-            else
-            {
-                d.disp(d.root);
-            }
-            break;
-        case 3:
-            if (d.root == NULL)
-            {
-                cout <<"\nDictionary is Empty.First add keywords then try again ";
-            }
-            else
-            {
-                cout <<"\nEnter Keyword which u want to search :";
-                string k;
-                getline(cin >> ws, k);
-                if (d.search(d.root, k) == 1)
-                    cout <<"\nKeyword Found";
-                else
-                    cout <<"\nKeyword Not Found";
-            }
-            break;
-        case 4:
-            if (d.root == NULL)
-            {
-                cout <<"\nDictionary is Empty.First add keywords then try again ";
-            }
-            else
-            {
-                cout <<"\nEnter Keyword which meaning want to update :";
-                string k;
-                getline(cin >> ws, k);
-                if (d.update(d.root, k) == 1)
-                    cout <<"\nMeaning Updated";
-                else
-                    cout <<"\nMeaning Not Found";
-            }
-            break;
-        case 5:
-            if (d.root == NULL)
-            {
-                cout <<"\nDictionary is Empty.First add keywords then try again ";
-            }
-            else
-            {
-                cout <<"\nEnter Keyword which u want to delete :";
-                string k;
-                getline(cin >> ws, k);
-                if (d.root == NULL)
-                {
-                    cout <<"\nNo any Keyword";
-                }
-                else
-                {
-                    d.root = d.del(d.root, k);
-                }
-            }
-        }
-    } while (ch <= 5);
-    return 0;
+	cout << "\n\tAVL TREE IMPLEMENTATION";
+	cout << "\n--------------------------------------";
+	do
+	{
+		cout << "\n--MENU--";
+		cout << "\n1.Insert \n2.Inorder \n3.Delete \n4.Search \n5.Update \n6.Exit";
+		cout << "\nEnter your choice: ";
+		cin >> ch;
+
+		switch (ch)
+		{
+		case 1:
+			cout << "Enter Number of data you want to Enter: ";
+			cin >> n;
+			cin.ignore();
+			for (int i = 0; i < n; i++)
+			{
+				cout << "\nEnter Word: ";
+				getline(cin, word);
+				cout << "\nEnter Meaning: ";
+				getline(cin, mean);
+				avl.Root = avl.insert(avl.Root, word, mean);
+			}
+			break;
+		case 2:
+			cout << "\nInorder Traversal:\n\tWORD\tMEANING";
+			avl.inOrder(avl.Root);
+			cout << '\n';
+			break;
+		case 3:
+			cout << "\nEnter the word to be deleted : ";
+			cin >> word;
+			avl.Root = avl.deletE(avl.Root, word);
+			break;
+
+		case 4:
+			cout << "\nEnter Word to be search: ";
+			cin.ignore();
+			getline(cin, word);
+			avl.search(avl.Root, word);
+			break;
+
+		case 5:
+			cout << "\nEnter Word to be Updated: ";
+			cin.ignore();
+			getline(cin, word);
+			avl.update(avl.Root, word);
+			break;
+		case 6:
+			cout<<"Exiting Program !!!"<<endl;
+			exit(0);
+		}
+	} while (ch != 6);
+
+	return 0;
 }
+
